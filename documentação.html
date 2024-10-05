@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação da API de Usuários e Documentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        h1, h2, h3, h4 {
+            color: #333;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h1 {
+            border-bottom: 2px solid #007BFF;
+            padding-bottom: 0.5rem;
+        }
+
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-left: 3px solid #007BFF;
+            overflow-x: auto;
+        }
+
+        code {
+            background-color: #e7e7e7;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .note {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            margin: 1rem 0;
+        }
+
+        footer {
+            margin-top: 2rem;
+            padding: 20px;
+            text-align: center;
+            background-color: #007BFF;
+            color: white;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .toc {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .toc h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>API de Usuários e Documentos</h1>
+    <p>Esta é uma API simples para gerenciar usuários e documentos usando Node.js, Express e Prisma. A API suporta operações CRUD (Criar, Ler, Atualizar, Deletar) para usuários e documentos.</p>
+
+    <div class="toc">
+        <h2>Sumário</h2>
+        <ul>
+            <li><a href="#instalacao-e-uso">Instalação e Uso</a></li>
+            <li><a href="#rotas">Rotas</a>
+                <ul>
+                    <li><a href="#autenticacao">1. Autenticação</a></li>
+                    <li><a href="#listar-todos-os-usuarios">2. Listar todos os usuários</a></li>
+                    <li><a href="#obter-usuario-por-id">3. Obter um Usuário por ID</a></li>
+                    <li><a href="#criar-usuario">4. Criar um Novo Usuário</a></li>
+                    <li><a href="#atualizar-usuario">5. Atualizar um Usuário</a></li>
+                    <li><a href="#listar-documentos">6. Listar Todos os Documentos de um Usuário</a></li>
+                    <li><a href="#criar-documento">7. Criar um Novo Documento</a></li>
+                    <li><a href="#atualizar-documento">8. Atualizar um Documento</a></li>
+                    <li><a href="#deletar-documento">9. Deletar um Documento</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section" id="instalacao-e-uso">
+        <h2>Instalação e Uso</h2>
+        <div class="section" id="backend">
+            <h3>Back-end</h3>            
+            <h4>1. Instalar os pacotes</h4>
+            <p>Dentro da pasta <b>back-end</b></p>
+            <pre><code>npm install</code></pre>
+            <h4>2. Iniciar o back-end</h4>
+            <pre><code>npm start</code></pre>
+            <h4>3. URL</h4>
+            <pre><code>http://localhost:9000</code></pre>
+        </div>
+        <div class="section" id="frontend">
+            <h3>Front-end</h3>
+            <h4>1. Instalar os pacotes</h4>
+            <p>Dentro da pasta <b>front-end</b>:</p>            
+            <pre><code>npm install</code></pre>
+            <h4>2. Iniciar o front-end</h4>
+            <pre><code>npm start</code></pre>
+            <h4>3. URL</h4>
+            <pre><code>http://localhost:3000</code></pre>
+        </div>
+    </div>
+
+    <div class="section" id="rotas">
+        <h2>Rotas</h2>
+
+        <div class="section" id="autenticacao">
+            <h3>1. Autenticação</h3>
+            <h4><strong>POST /auth/login</strong></h4>
+            <p>Realiza o login do usuário e retorna um token JWT.</p>
+            <p><strong>Corpo da Solicitação:</strong></p>
+            <pre><code>{
+  "email": "teste@teste.com",
+  "password": "123"
+}</code></pre>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>{
+  "token": "jwt-token-here"
+}</code></pre>
+            <p><strong>Respostas de Erro:</strong></p>
+            <p><em>404 Not Found</em> se o usuário não for encontrado.</p>
+            <p><em>401 Unauthorized</em> se a senha estiver incorreta.</p>
+        </div>
+
+        <div class="section" id="listar-todos-os-usuarios">
+            <h3>2. Listar todos os usuários</h3>
+            <h4><strong>GET /users</strong></h4>
+            <p>Retorna uma lista de todos os usuários. <strong>Requer autenticação JWT.</strong></p>
+            <p><strong>Exemplo de Solicitação:</strong></p>
+            <pre><code>GET /users
+HTTP/1.1
+Authorization: Bearer <token></code></pre>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>[
+  {
+    "id": 1,
+    "name": "User One",
+    "email": "user1@example.com"
+  },
+  {
+    "id": 2,
+    "name": "User Two",
+    "email": "user2@example.com"
+  }
+]</code></pre>
+            <p><strong><em>Respostas de Erro:</em></strong></p>
+            <p><em>401 Unauthorized</em> se o token JWT não for fornecido ou for inválido.</p>
+        </div>
+
+        <div class="section" id="obter-usuario-por-id">
+            <h3>3. Obter um Usuário por ID</h3>
+            <h4><strong>GET /users/:id</strong></h4>
+            <p>Retorna os detalhes de um usuário específico com base no ID fornecido. Requer autenticação JWT.</p>
+            <p><strong>Exemplo de Solicitação:</strong></p>
+            <pre><code>GET /users/1
+HTTP/1.1
+Authorization: Bearer <token></code></pre>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>{
+  "id": 1,
+  "name": "User One",
+  "email": "user1@example.com"
+}</code></pre>
+            <p><strong><em>Respostas de Erro:</em></strong></p>
+            <p><em>404 Not Found</em> se o usuário com o ID especificado não existir.</p>
+            <p><em>401 Unauthorized</em> se o token JWT não for fornecido ou for inválido.</p>
+        </div>
+
+        <div class="section" id="criar-usuario">
+            <h3>4. Criar um Novo Usuário</h3>
+            <h4><strong>POST /users</strong></h4>
+            <p>Cria um novo usuário.</p>
+            <p><strong>Exemplo de Solicitação:</strong></p>
+            <pre><code>{
+  "name": "New User",
+  "email": "newuser@example.com",
+  "password": "userpassword"
+}</code></pre>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>{
+  "id": 3,
+  "name": "New User",
+  "email": "newuser@example.com"
+}</code></pre>
+            <p><strong><em>Respostas de Erro:</em></strong></p>
+            <p><em>400 Bad Request</em> se os dados do usuário estiverem incompletos ou inválidos.</p>
+        </div>
+
+        <div class="section" id="atualizar-usuario">
+            <h3>5. Atualizar um Usuário</h3>
+            <h4><strong>PUT /users/:id</strong></h4>
+            <p>Atualiza um usuário existente com base no ID fornecido.</p>
+            <p><strong>Exemplo de Solicitação:</strong></p>
+            <pre><code>{
+  "name": "Updated User"
+}</code></pre>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>{
+  "id": 1,
+  "name": "Updated User",
+  "email": "user1@example.com"
+}</code></pre>
+            <p><strong><em>Respostas de Erro:</em></strong></p>
+            <p><em>404 Not Found</em> se o usuário com o ID especificado não existir.</p>
+        </div>
+
+        <div class="section" id="listar-documentos">
+            <h3>6. Listar Todos os Documentos de um Usuário</h3>
+            <h4><strong>GET /users/:id/documents</strong></h4>
+            <p>Retorna todos os documentos de um usuário específico.</p>
+            <p><strong>Exemplo de Solicitação:</strong></p>
+            <pre><code>GET /users/1/documents
+HTTP/1.1
+Authorization: Bearer <token></code></pre>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>[
+  {
+    "id": 1,
+    "title": "Document One"
+  },
+  {
+    "id": 2,
+    "title": "Document Two"
+  }
+]</code></pre>
+            <p><strong><em>Respostas de Erro:</em></strong></p>
+            <p><em>404 Not Found</em> se o usuário com o ID especificado não existir.</p>
+        </div>
+
+        <div class="section" id="criar-documento">
+            <h3>7. Criar um Novo Documento</h3>
+            <h4><strong>POST /users/:id/documents</strong></h4>
+            <p>Cria um novo documento para um usuário específico.</p>
+            <p><strong>Exemplo de Solicitação:</strong></p>
+            <pre><code>{
+  "title": "New Document",
+  "content": "Conteúdo do documento."
+}</code></pre>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>{
+  "id": 3,
+  "title": "New Document",
+  "userId": 1
+}</code></pre>
+            <p><strong><em>Respostas de Erro:</em></strong></p>
+            <p><em>404 Not Found</em> se o usuário com o ID especificado não existir.</p>
+        </div>
+
+        <div class="section" id="atualizar-documento">
+            <h3>8. Atualizar um Documento</h3>
+            <h4><strong>PUT /users/:id/documents/:id</strong></h4>
+            <p>Atualiza um documento existente.</p>
+            <p><strong>Exemplo de Solicitação:</strong></p>
+            <pre><code>{
+  "title": "Updated Document"
+}</code></pre>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>{
+  "id": 1,
+  "title": "Updated Document"
+}</code></pre>
+            <p><strong><em>Respostas de Erro:</em></strong></p>
+            <p><em>404 Not Found</em> se o documento com o ID especificado não existir.</p>
+        </div>
+
+        <div class="section" id="deletar-documento">
+            <h3>9. Deletar um Documento</h3>
+            <h4><strong>DELETE /users/:id/documents/:id</strong></h4>
+            <p>Deleta um documento existente.</p>
+            <p><strong>Resposta de Sucesso:</strong></p>
+            <pre><code>{
+  "message": "Documento deletado com sucesso."
+}</code></pre>
+            <p><strong><em>Respostas de Erro:</em></strong></p>
+            <p><em>404 Not Found</em> se o documento com o ID especificado não existir.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 API de Usuários e Documentos</p>
+        <p>Documentação gerada por <a href="https://github.com/diogo-palma" style="color: white; font-weight: 800;">Diogo Palma</a></p>
+    </footer>
+
+</body>
+</html>
